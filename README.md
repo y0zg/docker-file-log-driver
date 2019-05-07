@@ -95,6 +95,32 @@ Run a container using this plugin:
 $ docker run --log-driver file-log-driver --log-opt fpath=/testing/test.log alpine date
 Tue Feb 27 06:13:36 UTC 2018
 ```
+
+docker-compose
+```
+version: "3.5"
+networks:
+  network:
+    name: network
+    ipam:
+      config:
+       - subnet: 172.15.0.0/16
+services:
+      mongo:
+        image: alpine:latest
+        networks:
+           network:
+            ipv4_address: 172.15.0.222
+        logging:
+          driver: file-log-driver
+          options:
+            fpath: /testing/test2.log
+            tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        command: echo HELLO
+        restart: unless-stopped
+        container_name: alpine
+```
+
 **Note:** log file `--log-opt fpath` is stored inside **/var/log/fpath**
 i.e. fpath=/testing/test.log originally is stored in **/var/log/testing/test.log**
 
